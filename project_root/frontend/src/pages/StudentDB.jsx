@@ -257,7 +257,7 @@ export default function StudentDB() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [filterDepartment, setFilterDepartment] = useState('');
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [showAddModal, setShowAddModal] = useState(false);
 
   const staticDepartments = [
@@ -334,6 +334,21 @@ export default function StudentDB() {
       console.error('Error deleting student:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRequestChange = async (changeType, targetId, data) => {
+    const res = await API.post('/change_requests', {
+      username: user.username,
+      change_type: changeType, // e.g., 'add_student', 'edit_student', 'delete_student'
+      target_id: targetId,
+      data: JSON.stringify(data)
+    });
+    const result = res.data;
+    if (result.success) {
+      alert('Change request submitted for admin approval.');
+    } else {
+      alert(result.error || 'Failed to submit request');
     }
   };
 

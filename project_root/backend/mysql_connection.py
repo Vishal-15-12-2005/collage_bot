@@ -10,9 +10,9 @@ def get_db_connection() -> Optional[mysql.connector.connection.MySQLConnection]:
     try:
         connection = mysql.connector.connect(
             host='localhost',
-            user='vishal',
-            password='',
-            database='collage'  # Replace with your actual database name
+            user='root',
+            password='Localhost_123',
+            database='college'  # Replace with your actual database name
         )
         print("Database connection established.")
         return cast(mysql.connector.connection.MySQLConnection, connection)

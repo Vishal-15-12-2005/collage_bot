@@ -448,6 +448,29 @@ def delete_staff(staff_id):
     cur.close(); conn.close()
     return jsonify({"status": "deleted"})
 
+@app.route('/api/unknown_faces/<int:id>', methods=['DELETE'])
+def delete_unknown_face(id):
+    connection = get_db_connection()
+    if connection is None:
+        return jsonify({'error': 'Database connection failed'}), 500
+    cursor = None
+    try:
+        cursor = connection.cursor()
+        cursor.execute('DELETE FROM UNKNOWN_FACES WHERE id = %s', (int(id),))
+        connection.commit()
+        if cursor.rowcount == 0:
+            return jsonify({'error': 'Unknown face not found'}), 404
+        return jsonify({'status': 'deleted'})
+    except Exception as e:
+        if connection:
+            connection.rollback()
+        return jsonify({'error': str(e)}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
 # ------------------ START SERVER ------------------ #
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8081, debug=True)
